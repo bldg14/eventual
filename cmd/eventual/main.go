@@ -2,11 +2,15 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+
+	"github.com/bldg14/eventual/internal/event"
+	"github.com/bldg14/eventual/internal/event/stub"
 )
 
 func main() {
@@ -21,9 +25,7 @@ func run() error {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/api/v1/events", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
-	})
+	mux.HandleFunc("/api/v1/events", HandleGetAllEvents)
 
 	server := http.Server{
 		Handler: mux,
@@ -46,4 +48,25 @@ func run() error {
 	}
 
 	return nil
+}
+
+func HandleGetAllEvents(w http.ResponseWriter, r *http.Request) {
+	var eventStoreStub stub.Stub
+	events, err := event.GetAll(eventStoreStub)
+	if err != nil {
+		log.Printf("HandleGetAllEvents failed to GetAll: %s\n", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	result, err := json.Marshal(events)
+	if err != nil {
+		log.Printf("HandleGetAllEvents failed to Marshal: %s\n", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(result)
 }
