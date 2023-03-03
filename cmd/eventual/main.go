@@ -31,7 +31,10 @@ func run() error {
 	}
 
 	serverError := make(chan error, 1)
-	go func() { serverError <- server.ListenAndServe() }()
+	go func() {
+		log.Printf("listening on: %q\n", server.Addr)
+		serverError <- server.ListenAndServe()
+	}()
 
 	select {
 	case err := <-serverError:
