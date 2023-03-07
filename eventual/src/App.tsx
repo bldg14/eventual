@@ -13,9 +13,7 @@ function Event({title, description}: {title: string; description: string;}) {
   );
 }
 
-class App extends React.Component {
-
-  render() {
+function App() {
     return (
       <div className="App">
         <header className="App-header">
@@ -24,7 +22,6 @@ class App extends React.Component {
         <Event title="Bike Ride" description="Nice ride along the coast" />
       </div>
     );
-  }
 }
 
 export default App;
