@@ -14,11 +14,11 @@ type Event struct {
 	Email       string
 }
 
-type EventStore interface {
+type EventStorer interface {
 	GetEvents() ([]Event, error)
 }
 
-func GetAll(s EventStore) ([]Event, error) {
+func GetAll(s EventStorer) ([]Event, error) {
 	events, err := s.GetEvents()
 	if err != nil {
 		return nil, fmt.Errorf("failed to GetEvents: %w", err)
