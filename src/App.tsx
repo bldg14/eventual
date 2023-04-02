@@ -9,7 +9,14 @@ function App() {
       <header className="App-header">
         <Heading>Eventual</Heading>
       </header>
-      <Event title="Bike Ride" description="Nice ride along the coast" />
+      <Event
+        title="Bike Ride"
+        description="Nice ride along the coast"
+        start={new Date()}
+        end={new Date()}
+        url="https://www.google.com"
+        email="hello@world.com"
+      />
     </div>
   );
 }
