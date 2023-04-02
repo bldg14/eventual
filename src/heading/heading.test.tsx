@@ -4,7 +4,7 @@ import Heading from "./heading";
 
 test("renders the Heading component", () => {
   const title = "sup";
-  render(<Heading title={title} />);
+  render(<Heading>{title}</Heading>);
   const el = screen.getByText(title);
   expect(el).toBeInTheDocument();
 });

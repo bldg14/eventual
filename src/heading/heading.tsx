@@ -1,7 +1,9 @@
 interface HeadingProps {
-    title: string;
+  children: string;
 }
 
-const Heading = ({ title }: HeadingProps) => <h1>{ title }</h1>
+const Heading = ({ children }: HeadingProps) => {
+  return <h1>{children}</h1>;
+};
 
 export default Heading;
