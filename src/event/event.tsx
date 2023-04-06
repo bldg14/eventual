@@ -7,6 +7,14 @@ interface EventProps {
   email: string;
 }
 
+const formatTime = (time: Date): string => {
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }).format(time);
+};
+
 const Event = ({ title, description, start, end, url, email }: EventProps) => {
   return (
     <div className="event-container">
@@ -14,7 +22,7 @@ const Event = ({ title, description, start, end, url, email }: EventProps) => {
       <div className="event-details">
         <div className="event-time-container">
           <p className="event-time">
-            {start.toLocaleTimeString()} - {end.toLocaleTimeString()}
+            {formatTime(start)} - {formatTime(end)}
           </p>
         </div>
         <div className="event-description-container">
