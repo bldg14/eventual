@@ -13,6 +13,7 @@ import (
 
 	"github.com/bldg14/eventual/internal/event"
 	"github.com/bldg14/eventual/internal/event/stub"
+	"github.com/bldg14/eventual/internal/middleware"
 )
 
 func main() {
@@ -25,7 +26,9 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	api := mux.New()
+	api := mux.New(
+		middleware.CORS("http://localhost:3000"),
+	)
 
 	eh := mux.NewErrorHandler()
 
