@@ -9,8 +9,11 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/kevinfalting/mux"
+
 	"github.com/bldg14/eventual/internal/event"
 	"github.com/bldg14/eventual/internal/event/stub"
+	"github.com/bldg14/eventual/internal/middleware"
 )
 
 func main() {
@@ -23,12 +26,18 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	mux := http.NewServeMux()
+	api := mux.New(
+		middleware.CORS("http://localhost:3000"),
+	)
 
-	mux.HandleFunc("/api/v1/events", HandleGetAllEvents)
+	eh := mux.NewErrorHandler()
+
+	api.Handle("/api/v1/events", mux.Methods(
+		mux.WithGET(eh.Err(HandleGetAllEvents)),
+	))
 
 	server := http.Server{
-		Handler: mux,
+		Handler: api,
 		Addr:    ":8080",
 	}
 
@@ -50,23 +59,21 @@ func run() error {
 	return nil
 }
 
-func HandleGetAllEvents(w http.ResponseWriter, r *http.Request) {
+func HandleGetAllEvents(w http.ResponseWriter, r *http.Request) error {
 	var eventStoreStub stub.Stub
 	events, err := event.GetAll(eventStoreStub)
 	if err != nil {
-		log.Printf("HandleGetAllEvents failed to GetAll: %s\n", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return mux.Error(fmt.Errorf("HandleGetAllEvents failed to GetAll: %w", err), http.StatusInternalServerError)
 	}
 
 	result, err := json.Marshal(events)
 	if err != nil {
-		log.Printf("HandleGetAllEvents failed to Marshal: %s\n", err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return mux.Error(fmt.Errorf("HandleGetAllEvents failed to Marshal: %w", err), http.StatusInternalServerError)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(result)
+
+	return nil
 }
