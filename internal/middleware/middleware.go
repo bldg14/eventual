@@ -10,11 +10,18 @@ import (
 // CORS is a middleware that adds the Access-Control-Allow-Origin header to
 // responses. The allowedOrigins argument must not be empty.
 func CORS(allowedOrigins ...string) mux.Middleware {
-	if len(allowedOrigins) == 0 {
+	filteredOrigins := make([]string, 0, len(allowedOrigins))
+	for _, origin := range allowedOrigins {
+		if origin != "" {
+			filteredOrigins = append(filteredOrigins, origin)
+		}
+	}
+
+	if len(filteredOrigins) == 0 {
 		panic("allowedOrigins must not be empty")
 	}
 
-	origins := strings.Join(allowedOrigins, ", ")
+	origins := strings.Join(filteredOrigins, ", ")
 
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
