@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import Heading from "./heading/heading";
-import Event from "./event/event";
+import { Event } from "./event/event";
 
 function App() {
   return (
