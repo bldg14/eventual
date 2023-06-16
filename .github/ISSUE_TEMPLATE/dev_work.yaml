@@ -16,20 +16,20 @@ body:
       required: true
 
   - type: textarea
-    id: implementation-details
-    attributes:
-      label: Implementation Details
-      description: Please provide your thoughts on how we can accomplish this task or feature.
-    validations:
-      required: true
-
-  - type: input
     id: supporting-documentation
     attributes:
       label: Supporting Documentation
       placeholder: e.g., Links to any related issues, PRs, or external documentation.
     validations:
       required: false
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: Implementation Details
+      description: Please provide your thoughts on how we can accomplish this task or feature.
+    validations:
+      required: true
 
   - type: textarea
     id: acceptance-criteria
