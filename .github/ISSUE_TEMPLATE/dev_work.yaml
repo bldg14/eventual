@@ -1,0 +1,48 @@
+name: Dev Work
+description: Issue template for tracking development work
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this development work issue!
+
+  - type: input
+    id: issue-title
+    attributes:
+      label: Issue Title
+      placeholder: e.g., Add search functionality to event calendar
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: Please provide a detailed description of the task or feature, including why it's needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: Implementation Details
+      description: Please provide your thoughts on how we can accomplish this task or feature.
+    validations:
+      required: true
+
+  - type: input
+    id: supporting-documentation
+    attributes:
+      label: Supporting Documentation
+      placeholder: e.g., Links to any related issues, PRs, or external documentation.
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Please describe the criteria that must be met for this task or feature to be considered complete.
+    validations:
+      required: true
