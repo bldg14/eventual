@@ -7,14 +7,6 @@ body:
       value: |
         Thanks for taking the time to fill out this development work issue!
 
-  - type: input
-    id: issue-title
-    attributes:
-      label: Issue Title
-      placeholder: e.g., Add search functionality to event calendar
-    validations:
-      required: true
-
   - type: textarea
     id: issue-description
     attributes:
