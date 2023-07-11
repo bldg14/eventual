@@ -1,6 +1,8 @@
 import React from "react";
 import "./App.css";
 import { Event } from "./event/event";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 
 function App() {
   return (
