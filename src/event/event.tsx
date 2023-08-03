@@ -16,28 +16,40 @@ export const formatTime = (time: Date): string => {
     hour: "numeric",
     minute: "numeric",
     hour12: true,
-
   }).format(time);
 };
 
-export const Event = ({ title, description, start, end, url, email }: EventProps) => {
+export const Event = ({
+  title,
+  description,
+  start,
+  end,
+  url,
+  email,
+}: EventProps) => {
   return (
-    <div className="event-container">
-      <h2 className="event-title">{title}</h2>
-      <div className="event-details">
-        <div className="event-time-container">
-          <p className="event-time">
+    <Container>
+      <Row>
+        <Col>
+          <h3>{title}</h3>
+        </Col>
+        <Col>
+          <p>
             {formatTime(start)} - {formatTime(end)}
           </p>
-        </div>
-        <div className="event-description-container">
-          <p className="event-description">{description}</p>
-        </div>
-      </div>
-      <div className="event-footer">
-        <button className="event-url">{url}</button>
-        <button className="event-email">{email}</button>
-      </div>
-    </div>
+        </Col>
+      </Row>
+      <Row>
+        <p>{description}</p>
+      </Row>
+      <Row>
+        <Col>
+          <a href="#">{url}</a>
+        </Col>
+        <Col>
+          <a href="#">{email}</a>
+        </Col>
+      </Row>
+    </Container>
   );
 };
