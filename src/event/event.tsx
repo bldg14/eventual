@@ -34,7 +34,7 @@ export const Event = ({
           <h3>{title}</h3>
         </Col>
         <Col>
-          <p>
+          <p className="text-end">
             {formatTime(start)} - {formatTime(end)}
           </p>
         </Col>
@@ -46,7 +46,7 @@ export const Event = ({
         <Col>
           <a href="/">{url}</a>
         </Col>
-        <Col>
+        <Col className="text-end">
           <a href="/">{email}</a>
         </Col>
       </Row>
