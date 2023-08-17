@@ -13,7 +13,6 @@ import (
 	"github.com/kevinfalting/mux"
 	"github.com/kevinfalting/structconf"
 
-	"github.com/bldg14/eventual/internal/config"
 	"github.com/bldg14/eventual/internal/event"
 	"github.com/bldg14/eventual/internal/event/stub"
 	"github.com/bldg14/eventual/internal/middleware"
@@ -29,12 +28,12 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	conf, err := structconf.New[config.Config]()
+	conf, err := structconf.New[config]()
 	if err != nil {
 		return fmt.Errorf("failed to structconf.New: %w", err)
 	}
 
-	var cfg config.Config
+	var cfg config
 	if err := conf.Parse(ctx, &cfg); err != nil {
 		return fmt.Errorf("failed to Parse config: %w", err)
 	}
