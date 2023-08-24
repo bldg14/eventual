@@ -28,7 +28,7 @@ export const Event = ({
   email,
 }: EventProps) => {
   return (
-    <Container>
+    <Container className="rounded overflow-hidden bg-info-subtle">
       <Row>
         <Col>
           <h3>{title}</h3>
