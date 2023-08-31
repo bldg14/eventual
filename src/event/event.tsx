@@ -44,7 +44,7 @@ export const Event = ({
       </Row>
       <Row>
         <Col>
-          <a className="text-decoration-none link-secondary" href="/">
+          <a className="text-decoration-none link-secondary" href={url}>
             {url}
           </a>
         </Col>
