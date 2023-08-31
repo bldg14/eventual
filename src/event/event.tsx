@@ -49,7 +49,10 @@ export const Event = ({
           </a>
         </Col>
         <Col className="text-end">
-          <a className="text-decoration-none link-secondary" href="/">
+          <a
+            className="text-decoration-none link-secondary"
+            href={"mailto:" + email}
+          >
             {email}
           </a>
         </Col>
