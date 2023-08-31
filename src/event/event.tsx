@@ -1,3 +1,7 @@
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+
 interface EventProps {
   title: string;
   description: string;
@@ -12,28 +16,47 @@ export const formatTime = (time: Date): string => {
     hour: "numeric",
     minute: "numeric",
     hour12: true,
-
   }).format(time);
 };
 
-export const Event = ({ title, description, start, end, url, email }: EventProps) => {
+export const Event = ({
+  title,
+  description,
+  start,
+  end,
+  url,
+  email,
+}: EventProps) => {
   return (
-    <div className="event-container">
-      <h2 className="event-title">{title}</h2>
-      <div className="event-details">
-        <div className="event-time-container">
-          <p className="event-time">
+    <Container className="rounded overflow-hidden bg-info-subtle">
+      <Row>
+        <Col>
+          <h3>{title}</h3>
+        </Col>
+        <Col>
+          <p className="text-end">
             {formatTime(start)} - {formatTime(end)}
           </p>
-        </div>
-        <div className="event-description-container">
-          <p className="event-description">{description}</p>
-        </div>
-      </div>
-      <div className="event-footer">
-        <button className="event-url">{url}</button>
-        <button className="event-email">{email}</button>
-      </div>
-    </div>
+        </Col>
+      </Row>
+      <Row>
+        <p>{description}</p>
+      </Row>
+      <Row>
+        <Col>
+          <a className="text-decoration-none link-secondary" href={url}>
+            {url}
+          </a>
+        </Col>
+        <Col className="text-end">
+          <a
+            className="text-decoration-none link-secondary"
+            href={"mailto:" + email}
+          >
+            {email}
+          </a>
+        </Col>
+      </Row>
+    </Container>
   );
 };
