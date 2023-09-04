@@ -4,8 +4,8 @@ on:
     branches:
       - main
 jobs:
-  deploy:
-    name: Deploy app
+  deploy-server:
+    name: Deploy Server
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
