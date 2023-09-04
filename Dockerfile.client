@@ -1,0 +1,19 @@
+ARG NODE_VERSION=18
+FROM node:${NODE_VERSION} as builder
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install --omit="dev"
+COPY . .
+RUN npm run build
+
+FROM nginxinc/nginx-unprivileged as nginx
+
+COPY --chown=nginx:nginx nginx.client.conf /etc/nginx/nginx.conf
+
+COPY --from=builder /app/build/ /www/data/
+
+EXPOSE 8080
+
+USER nginx
+ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
