@@ -17,3 +17,4 @@ COPY --from=builder /bin/eventual /
 EXPOSE 8080
 USER nonroot
 ENTRYPOINT ["/eventual"]
+CMD [ "-env", "production" ]
