@@ -1,6 +1,6 @@
 module github.com/bldg14/eventual
 
-go 1.20
+go 1.21
 
 require (
 	github.com/kevinfalting/mux v0.1.0
