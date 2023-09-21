@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -28,12 +29,15 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
+	flagEnv := flag.String("env", "local", "environment this server is running in")
+
 	conf, err := structconf.New[config]()
 	if err != nil {
 		return fmt.Errorf("failed to structconf.New: %w", err)
 	}
+	flag.Parse()
 
-	var cfg config
+	cfg := Config(*flagEnv)
 	if err := conf.Parse(ctx, &cfg); err != nil {
 		return fmt.Errorf("failed to Parse config: %w", err)
 	}

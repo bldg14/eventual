@@ -12,41 +12,75 @@ func TestCORS(t *testing.T) {
 	tests := []struct {
 		name           string
 		allowedOrigins []string
+		origin         string
 		expectHeader   string
 		expectPanic    bool
 	}{
 		{
-			name:           "single origin",
-			allowedOrigins: []string{"hello, test"},
-			expectHeader:   "hello, test",
+			name:           "single allowedOrigins",
+			allowedOrigins: []string{"https://test.com"},
+			origin:         "https://test.com",
+			expectHeader:   "https://test.com",
 			expectPanic:    false,
 		},
 		{
-			name:           "multiple origins",
-			allowedOrigins: []string{"hello, test", "hello, test2"},
-			expectHeader:   "hello, test, hello, test2",
+			name:           "multiple allowedOrigins",
+			allowedOrigins: []string{"https://test.com", "https://test2.com"},
+			origin:         "https://test2.com",
+			expectHeader:   "https://test2.com",
 			expectPanic:    false,
 		},
 		{
-			name:           "empty origin",
-			allowedOrigins: []string{"hello, test", "", "hello, test2"},
-			expectHeader:   "hello, test, hello, test2",
+			name:           "empty allowedOrigins",
+			allowedOrigins: []string{"https://test.com", "", "https://test2.com"},
+			origin:         "https://test.com",
+			expectHeader:   "https://test.com",
 			expectPanic:    false,
 		},
 		{
-			name:           "no origins",
+			name:           "no allowedOrigins",
 			allowedOrigins: []string{},
 			expectPanic:    true,
 		},
 		{
-			name:           "nil origins",
+			name:           "nil allowedOrigins",
 			allowedOrigins: nil,
 			expectPanic:    true,
 		},
 		{
-			name:           "all empty origins",
+			name:           "all empty allowedOrigins",
 			allowedOrigins: []string{"", "", ""},
 			expectPanic:    true,
+		},
+		{
+			name:           "wildcard allowedOrigins",
+			allowedOrigins: []string{"*"},
+			origin:         "https://test.com",
+			expectHeader:   "https://test.com",
+		},
+		{
+			name:           "wildcard with suffix allowedOrigins",
+			allowedOrigins: []string{"*.test.com"},
+			origin:         "https://sub.test.com",
+			expectHeader:   "https://sub.test.com",
+		},
+		{
+			name:           "wildcard with suffix and non-suffixed allowedOrigins",
+			allowedOrigins: []string{"*.test2.com", "https://test.com"},
+			origin:         "https://test.com",
+			expectHeader:   "https://test.com",
+		},
+		{
+			name:           "wildcard with suffix allowedOrigins and bad origin",
+			allowedOrigins: []string{"*.test.com"},
+			origin:         "https://test2.com",
+			expectHeader:   "",
+		},
+		{
+			name:           "wildcard with suffix allowedOrigins and origin not at suffix",
+			allowedOrigins: []string{"*.test.com"},
+			origin:         "https://test.com",
+			expectHeader:   "",
 		},
 	}
 
@@ -67,7 +101,10 @@ func TestCORS(t *testing.T) {
 			})
 
 			w := httptest.NewRecorder()
-			r := http.Request{}
+			r := http.Request{
+				Header: http.Header{},
+			}
+			r.Header.Set("Origin", test.origin)
 
 			handler := mw(h)
 			handler.ServeHTTP(w, &r)
@@ -77,7 +114,11 @@ func TestCORS(t *testing.T) {
 			}
 
 			if w.Header().Get("Access-Control-Allow-Origin") != test.expectHeader {
-				t.Errorf("expected %s, got %s", test.expectHeader, w.Header().Get("Access-Control-Allow-Origin"))
+				t.Errorf("expected %q, got %q", test.expectHeader, w.Header().Get("Access-Control-Allow-Origin"))
+			}
+
+			if w.Header().Get("Access-Control-Allow-Headers") != "Content-Type, Authorization" {
+				t.Errorf("expected %q, got %q", "Content-Type, Authorization", w.Header().Get("Access-Control-Allow-Headers"))
 			}
 
 			isPanicking = false
