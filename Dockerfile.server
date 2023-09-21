@@ -1,25 +1,19 @@
 ARG GO_VERSION=1.21.0
 
-FROM golang:${GO_VERSION} as builder
+FROM golang:${GO_VERSION} AS builder
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates tzdata
+WORKDIR /app
+COPY go.mod go.sum /app/
+RUN go mod download
 
-RUN adduser --system --group nonrootuser
+COPY ./cmd/eventual /app/cmd/eventual
+COPY ./internal /app/internal
+RUN CGO_ENABLED=0 go build --trimpath -o /bin/eventual ./cmd/eventual
 
-WORKDIR /src
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build --trimpath -o ./bin/eventual ./cmd/eventual
-RUN chown nonrootuser:nonrootuser ./bin/eventual
+FROM gcr.io/distroless/static AS production
 
-FROM scratch
+COPY --from=builder /bin/eventual /
 
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder --chown=nonrootuser:nonrootuser /src/bin/eventual /bin/eventual
-
-USER nonrootuser
 EXPOSE 8080
-ENTRYPOINT ["/bin/eventual"]
+USER nonroot
+ENTRYPOINT ["/eventual"]
