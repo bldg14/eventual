@@ -1,6 +1,7 @@
 ARG NODE_VERSION=18
-ARG BACKEND_URL="https://eventual-server.fly.dev"
 FROM node:${NODE_VERSION} as builder
+
+ARG BACKEND_URL="https://eventual-server.fly.dev"
 
 WORKDIR /app
 COPY package.json package-lock.json ./
