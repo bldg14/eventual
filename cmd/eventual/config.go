@@ -1,5 +1,10 @@
 package main
 
+const (
+	EnvLocal      = "local"
+	EnvProduction = "production"
+)
+
 type config struct {
 	AllowedOrigins string `conf:"env:ALLOWED_ORIGINS"`
 	Port           int    `conf:"env:PORT"`
@@ -19,9 +24,9 @@ var productionConfig = config{
 
 func Config(env string) config {
 	switch env {
-	case "local":
+	case EnvLocal:
 		return localConfig
-	case "production":
+	case EnvProduction:
 		return productionConfig
 	default:
 		return config{}

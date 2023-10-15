@@ -29,7 +29,7 @@ func run() error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	flagEnv := flag.String("env", "local", "environment this server is running in")
+	flagEnv := flag.String("env", EnvLocal, "environment this server is running in")
 
 	conf, err := structconf.New[config]()
 	if err != nil {
