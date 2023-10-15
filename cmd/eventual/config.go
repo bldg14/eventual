@@ -1,8 +1,15 @@
 package main
 
 type config struct {
-	AllowedOrigins string `conf:"env:ALLOWED_ORIGINS,default:http://localhost:3000"`
-	Port           int    `conf:"env:PORT,default:8080"`
+	AllowedOrigins string `conf:"env:ALLOWED_ORIGINS"`
+	Port           int    `conf:"env:PORT"`
+	DatabaseURL    string `conf:"env:DATABASE_URL"`
+}
+
+var localConfig = config{
+	AllowedOrigins: "http://localhost:3000",
+	Port:           8080,
+	DatabaseURL:    "postgresql://eventual-user:local-dev-password@localhost:5432/eventual",
 }
 
 var productionConfig = config{
@@ -13,7 +20,7 @@ var productionConfig = config{
 func Config(env string) config {
 	switch env {
 	case "local":
-		return config{}
+		return localConfig
 	case "production":
 		return productionConfig
 	default:
