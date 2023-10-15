@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"strings"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/kevinfalting/mux"
 	"github.com/kevinfalting/structconf"
 
@@ -40,6 +41,15 @@ func run() error {
 	cfg := Config(*flagEnv)
 	if err := conf.Parse(ctx, &cfg); err != nil {
 		return fmt.Errorf("failed to Parse config: %w", err)
+	}
+
+	pool, err := pgxpool.New(ctx, cfg.DatabaseURL)
+	if err != nil {
+		return fmt.Errorf("failed to get new pool: %w", err)
+	}
+
+	if err := pool.Ping(ctx); err != nil {
+		return fmt.Errorf("failed to Ping: %w", err)
 	}
 
 	api := mux.New(
