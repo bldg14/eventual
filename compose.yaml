@@ -1,0 +1,12 @@
+name: "eventual"
+services:
+  pg:
+    image: postgres:15.3
+    environment:
+      POSTGRES_USER: eventual-user
+      POSTGRES_PASSWORD: local-dev-password
+      POSTGRES_DB: eventual
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.postgres:/var/lib/postgresql/data
