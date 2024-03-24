@@ -31,15 +31,10 @@ func run() error {
 	defer stop()
 
 	flagEnv := flag.String("env", EnvLocal, "environment this server is running in")
-
-	conf, err := structconf.New[config]()
-	if err != nil {
-		return fmt.Errorf("failed to structconf.New: %w", err)
-	}
 	flag.Parse()
 
 	cfg := Config(*flagEnv)
-	if err := conf.Parse(ctx, &cfg); err != nil {
+	if err := structconf.Parse(ctx, &cfg); err != nil {
 		return fmt.Errorf("failed to Parse config: %w", err)
 	}
 
