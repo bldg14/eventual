@@ -51,7 +51,10 @@ func run() error {
 		middleware.CORS(strings.Split(cfg.AllowedOrigins, ",")...),
 	)
 
-	eh := mux.NewErrorHandler()
+	eh := mux.ErrorHandler{
+		ErrWriter: os.Stderr,
+		ErrFunc:   http.Error,
+	}
 
 	api.Handle("/api/v1/events", mux.Methods(
 		mux.WithGET(eh.Err(HandleGetAllEvents)),

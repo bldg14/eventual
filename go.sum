@@ -11,6 +11,8 @@ github.com/jackc/puddle/v2 v2.2.1 h1:RhxXJtFG022u4ibrCSMSiu5aOq1i77R3OHKNJj77OAk
 github.com/jackc/puddle/v2 v2.2.1/go.mod h1:vriiEXHvEE654aYKXXjOvZM39qJ0q+azkZFrfEOc3H4=
 github.com/kevinfalting/mux v0.1.0 h1:MaIw4vBERtpuieXsBDctxFXa0MH7cvenVuuxhaG1FSk=
 github.com/kevinfalting/mux v0.1.0/go.mod h1:CtyQSnYs4qrELIxoCuZMKx0Diox29jxYcBmoawzsReU=
+github.com/kevinfalting/mux v0.2.0 h1:oPZLFksusZ17vpECAyraw6dgg0w1cxskZ2FBR0or1Pk=
+github.com/kevinfalting/mux v0.2.0/go.mod h1:CtyQSnYs4qrELIxoCuZMKx0Diox29jxYcBmoawzsReU=
 github.com/kevinfalting/structconf v0.1.0 h1:0wmv2eja3khzGBYTOLZ9t7+aP1EIQvrDZUmGYQAxyZA=
 github.com/kevinfalting/structconf v0.1.0/go.mod h1:m7vLS3aUjCgXOnTVyzwPZg5bLGVfnVXiX9wHOVYp+LY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
