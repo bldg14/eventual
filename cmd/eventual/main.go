@@ -21,17 +21,24 @@ import (
 )
 
 func main() {
-	if err := run(); err != nil {
+	if err := run(
+		context.Background(),
+		os.Args,
+	); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func run() error {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+func run(ctx context.Context, args []string) error {
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 
-	flagEnv := flag.String("env", EnvLocal, "environment this server is running in")
-	flag.Parse()
+	fset := flag.NewFlagSet(args[0], flag.ExitOnError)
+	flagEnv := fset.String("env", EnvLocal, "environment this server is running in")
+
+	if err := fset.Parse(os.Args[1:]); err != nil {
+		return fmt.Errorf("failed to Parse flags: %w", err)
+	}
 
 	cfg := Config(*flagEnv)
 	if err := structconf.Parse(ctx, &cfg); err != nil {
