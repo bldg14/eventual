@@ -21,13 +21,15 @@ go mod tidy && npm install
 
 ## Local Development
 
-The client and server are built and run separately. To run both of them, open a terminal and run the next set of commands:
+The client, server, and dependent services are built and run separately. To run them, open a terminal and run the next set of commands in separate tabs:
+
+```sh
+docker compose up
+```
 
 ```sh
 go run ./cmd/eventual
 ```
-
-Then open another terminal session and run:
 
 ```sh
 npm run start
