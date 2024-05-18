@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/jackc/pgx/v5 v5.4.3
-	github.com/kevinfalting/mux v0.1.0
+	github.com/kevinfalting/mux v0.2.0
 	github.com/kevinfalting/structconf v0.1.0
 )
 
