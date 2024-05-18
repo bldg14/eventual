@@ -6,9 +6,7 @@ import (
 	"github.com/bldg14/eventual/internal/event"
 )
 
-type Stub struct{}
-
-func (s Stub) GetEvents() ([]event.Event, error) {
+func GetEvents() ([]event.Event, error) {
 	return []event.Event{
 		{
 			Title:       "Petting Zoo",

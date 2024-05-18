@@ -14,14 +14,12 @@ type Event struct {
 	Email       string
 }
 
-type EventStorer interface {
-	GetEvents() ([]Event, error)
-}
+type GetAllEvents func() ([]Event, error)
 
-func GetAll(s EventStorer) ([]Event, error) {
-	events, err := s.GetEvents()
+func GetAll(getAllEvents GetAllEvents) ([]Event, error) {
+	events, err := getAllEvents()
 	if err != nil {
-		return nil, fmt.Errorf("failed to GetEvents: %w", err)
+		return nil, fmt.Errorf("failed to getAllEvents: %w", err)
 	}
 
 	return events, nil

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -15,7 +14,7 @@ import (
 	"github.com/kevinfalting/mux"
 	"github.com/kevinfalting/structconf"
 
-	"github.com/bldg14/eventual/internal/event"
+	"github.com/bldg14/eventual/internal/event/handle"
 	"github.com/bldg14/eventual/internal/event/stub"
 	"github.com/bldg14/eventual/internal/middleware"
 )
@@ -64,7 +63,7 @@ func run(ctx context.Context, args []string) error {
 	}
 
 	api.Handle("/api/v1/events", mux.Methods(
-		mux.WithGET(eh.Err(HandleGetAllEvents)),
+		mux.WithGET(eh.Err(handle.GetAllEvents(stub.GetEvents))),
 	))
 
 	server := http.Server{
@@ -86,25 +85,6 @@ func run(ctx context.Context, args []string) error {
 			return fmt.Errorf("failed to Shutdown: %w", err)
 		}
 	}
-
-	return nil
-}
-
-func HandleGetAllEvents(w http.ResponseWriter, r *http.Request) error {
-	var eventStoreStub stub.Stub
-	events, err := event.GetAll(eventStoreStub)
-	if err != nil {
-		return mux.Error(fmt.Errorf("HandleGetAllEvents failed to GetAll: %w", err), http.StatusInternalServerError)
-	}
-
-	result, err := json.Marshal(events)
-	if err != nil {
-		return mux.Error(fmt.Errorf("HandleGetAllEvents failed to Marshal: %w", err), http.StatusInternalServerError)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(result)
 
 	return nil
 }
