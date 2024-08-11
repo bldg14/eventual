@@ -1,15 +1,22 @@
-package stub
+package storage
 
 import (
 	"time"
 
-	"github.com/bldg14/eventual/internal/event"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Stub struct{}
+type Event struct {
+	Title       string
+	Start       time.Time
+	End         time.Time
+	Description string
+	URL         string
+	Email       string
+}
 
-func (s Stub) GetEvents() ([]event.Event, error) {
-	return []event.Event{
+func GetAll(pool *pgxpool.Pool) ([]Event, error) {
+	return []Event{
 		{
 			Title:       "Petting Zoo",
 			Start:       time.Now().Add(24 * time.Hour),

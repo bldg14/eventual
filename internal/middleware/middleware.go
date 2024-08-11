@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -17,28 +18,17 @@ import (
 // must include the full url, including the scheme. If you need a wildcarded
 // subdomain, prepend the allowed origin with "*." but do not include a scheme.
 // Schemes for wildcarded subdomains are not supported (yet).
-func CORS(allowedOrigins ...string) mux.Middleware {
-	origins := make(map[string]bool, len(allowedOrigins))
-	for _, allowedOrigin := range allowedOrigins {
-		if allowedOrigin != "" {
-			origins[allowedOrigin] = true
-		}
-	}
-
-	if len(origins) == 0 {
-		panic("allowedOrigins must not be empty")
-	}
-
+func CORS(allowedOrigins AllowedOrigins) mux.Middleware {
 	isOriginAllowed := func(origin string) bool {
-		if _, ok := origins["*"]; ok {
+		if _, ok := allowedOrigins.origins["*"]; ok {
 			return true
 		}
 
-		if _, ok := origins[origin]; ok {
+		if _, ok := allowedOrigins.origins[origin]; ok {
 			return true
 		}
 
-		for allowedOrigin := range origins {
+		for allowedOrigin := range allowedOrigins.origins {
 			if !strings.HasPrefix(allowedOrigin, "*.") {
 				continue
 			}
@@ -61,4 +51,25 @@ func CORS(allowedOrigins ...string) mux.Middleware {
 			h.ServeHTTP(w, r)
 		})
 	}
+}
+
+type AllowedOrigins struct {
+	origins map[string]struct{}
+}
+
+func ParseAllowedOrigins(allowedOrigins ...string) (AllowedOrigins, error) {
+	origins := map[string]struct{}{}
+	for _, origin := range allowedOrigins {
+		if origin == "" {
+			continue
+		}
+
+		origins[origin] = struct{}{}
+	}
+
+	if len(origins) == 0 {
+		return AllowedOrigins{}, errors.New("allowedOrigins must not be empty")
+	}
+
+	return AllowedOrigins{origins: origins}, nil
 }
