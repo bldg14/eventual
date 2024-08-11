@@ -10,47 +10,44 @@ import (
 
 func TestCORS(t *testing.T) {
 	tests := []struct {
-		name           string
-		allowedOrigins []string
-		origin         string
-		expectHeader   string
-		expectPanic    bool
+		name             string
+		allowedOrigins   []string
+		origin           string
+		expectHeader     string
+		expectBadOrigins bool
 	}{
 		{
 			name:           "single allowedOrigins",
 			allowedOrigins: []string{"https://test.com"},
 			origin:         "https://test.com",
 			expectHeader:   "https://test.com",
-			expectPanic:    false,
 		},
 		{
 			name:           "multiple allowedOrigins",
 			allowedOrigins: []string{"https://test.com", "https://test2.com"},
 			origin:         "https://test2.com",
 			expectHeader:   "https://test2.com",
-			expectPanic:    false,
 		},
 		{
 			name:           "empty allowedOrigins",
 			allowedOrigins: []string{"https://test.com", "", "https://test2.com"},
 			origin:         "https://test.com",
 			expectHeader:   "https://test.com",
-			expectPanic:    false,
 		},
 		{
-			name:           "no allowedOrigins",
-			allowedOrigins: []string{},
-			expectPanic:    true,
+			name:             "no allowedOrigins",
+			allowedOrigins:   []string{},
+			expectBadOrigins: true,
 		},
 		{
-			name:           "nil allowedOrigins",
-			allowedOrigins: nil,
-			expectPanic:    true,
+			name:             "nil allowedOrigins",
+			allowedOrigins:   nil,
+			expectBadOrigins: true,
 		},
 		{
-			name:           "all empty allowedOrigins",
-			allowedOrigins: []string{"", "", ""},
-			expectPanic:    true,
+			name:             "all empty allowedOrigins",
+			allowedOrigins:   []string{"", "", ""},
+			expectBadOrigins: true,
 		},
 		{
 			name:           "wildcard allowedOrigins",
@@ -86,15 +83,16 @@ func TestCORS(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			isPanicking := true
-			defer func() {
-				r := recover()
-				if isPanicking && !test.expectPanic {
-					t.Errorf("expected no panic, got %v", r)
+			allowedOrigins, err := middleware.ParseAllowedOrigins(test.allowedOrigins...)
+			if test.expectBadOrigins {
+				if err != nil {
+					return
 				}
-			}()
 
-			mw := middleware.CORS(test.allowedOrigins...)
+				t.Fatalf("expected error but got nothing")
+			}
+
+			mw := middleware.CORS(allowedOrigins)
 
 			h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusOK)
@@ -120,8 +118,6 @@ func TestCORS(t *testing.T) {
 			if w.Header().Get("Access-Control-Allow-Headers") != "Content-Type, Authorization" {
 				t.Errorf("expected %q, got %q", "Content-Type, Authorization", w.Header().Get("Access-Control-Allow-Headers"))
 			}
-
-			isPanicking = false
 		})
 	}
 }
